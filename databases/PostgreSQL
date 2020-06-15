@@ -1,0 +1,136 @@
+Convert XLXX to CSV
+
+https://linoxide.com/linux-how-to/methods-convert-xlsx-format-files-csv-linux-cli/
+# xlsx2csv class.xlsx -s 2 > sheet2.csv	
+
+ pgcsv --db 'postgresql://34.217.65.231/vgps_stage_db_feb_08?user=vgps_user&password=crewlogix' upload_venues_tb data-1586784858782.csv
+
+
+
+
+add id field into table  
+   ALTER TABLE annual_event_tb ADD COLUMN id SERIAL PRIMARY KEY;
+
+
+
+=================
+PostgreSQL
+=================
+https://computingforgeeks.com/how-to-install-postgis-on-ubuntu-debian/
+------------------
+https://stackoverflow.com/questions/42653690/psql-could-not-connect-to-server-no-such-file-or-directory-5432-error
+-----------------------------------
+https://www.digitalocean.com/community/tutorials/how-to-backup-postgresql-databases-on-an-ubuntu-vps
+-------------------------------------
+Here’s how to view your PostgreSQL version:
+SHOW server_version;
+-------------------------------
+command to find a file 
+find /usr -name postgis.control 
+------------------------------
+How To Remove PostgreSQL
+https://www.liquidweb.com/kb/how-to-remove-postgresql/
+------------------------------
+install postgis
+https://computingforgeeks.com/how-to-install-postgis-on-ubuntu-debian/
+----------------------------
+cannot create extension without superuser role
+permission denied to create extension "postgis"
+
+postgres# ALTER ROLE <user_name> SUPERUSER;
+--------------------------------------------
+
+________________________________________________________________________
+
+sudo su - postgres
+
+sudo -u postgres psql
+
+
+postgres=# CREATE DATABASE sirmaya_local_db;
+CREATE DATABASE
+postgres=# CREATE USER sirmaya_local_db_user WITH PASSWORD 'postgresql';
+CREATE ROLE
+postgres=#	
+ALTER ROLE
+postgres=# ALTER ROLE sirmaya_local_db_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE
+postgres=# ALTER ROLE sirmaya_local_db_user  SET timezone TO 'UTC';
+ALTER ROLE
+postgres=# GRANT ALL PRIVILEGES ON DATABASE sirmaya_local_db TO sirmaya_local_db_user;
+GRANT
+postgres=# 
+postgres=# \q
+
+For example, to change the sde password, type:
+
+\password sde
+____________________________________________________________________________
+
+Dump
+pg_dump -h localhost -p 5432 -U vgps_user -d venuegps_dev_db > vgps_dev_16_Jan_2020_latest.bak
+Restore
+psql -h localhost -d vgps_dev_bk_16_jan_2020 -U vgps_user -f vgps_dev_16_Jan_2020_latest.bak
+
+psql -h localhost -d vgps_dev_db -U vgps_user -f vgps_stag_15_june_202_l0.bak
+vgps_dev_db
+---------------------------------------------------------------------------------
+Command to import data from/to postgresql:
+
+pgcsv --db 'postgresql://localhost/venuegps_local?user=vgps_user&password=crewlogix' my_table annual_event.csv                   
+
+pgcsv --db 'postgresql://34.217.65.231/vgps_stage_db_feb_08?user=vgps_user&password=crewlogix' annual_event_tb annual_event_business.csv
+
+---------------------------------------------------------------------------------
+Create Model From Database:
+ ./manage.py inspectdb
+
+
+https://dev.to/idrisrampurawala/creating-django-models-of-an-existing-db-288m
+----------------------------------------------------------------------------------
+“django.db.utils.ProgrammingError: permission denied for relation django_migrations”
+---------------------------------------------------------------------------------
+psql mydatabase -c "GRANT ALL ON ALL TABLES IN SCHEMA public to dbuser;"
+psql mydatabase -c "GRANT ALL ON ALL SEQUENCES IN SCHEMA public to dbuser;"
+psql mydatabase -c "GRANT ALL ON ALL FUNCTIONS IN SCHEMA public to dbuser;"
+
+
+---------------------------------------------------------------------------------------
+---------import (restore) from file -------------
+psql -h localhost -d venuegps_local -U v_user -f /home/shah/Desktop/vgps_dump.psql
+psql -h localhost -d vgps_dev_bk_3_jan -U vgps_user -f vgps_dev_1_1_2020.bak
+---------------------------------DATABASE RESTORE --------------------------------------------------
+pg_restore -h localhost -p 5432 -U postgres -d sirmaya_local_ sirmaya_loc.bak
+pg_restore -h localhost -p 5432 -U sirmaya_local_db_user -d sirmaya_local_ sirmaya_loc.bak
+
+pg_restore -h localhost -p 5432 -U vgps_user -d vgps_dump.bak
+
+
+
+---------------------------------------------------------------------------------------
+****************pg_dump postgres database from remote server**************************
+pg_dump -h 54.70.191.247 -Fc -o -U sirmaya_stage sirmaya_prod_latest > dev_sirmaya_dump  
+pg_dump -h localhost -p 5432 -U v_user -d vgps > vgps_dump.tar
+--------------------------------------------------------------------------------------
+
+create backup
+
+pg_dump -h localhost -p 5432 -U postgres -F c -b -v -f 
+"/usr/local/backup/10.70.0.61.backup" old_db
+-F c is custom format (compressed, and able to do in parallel with -j N) -b is including blobs, -v is verbose, -f is the backup file name
+
+restore from backup
+
+pg_restore -h localhost -p 5432 -U postgres -d old_db -v 
+"/usr/local/backup/10.70.0.61.backup"
+important to set -h localhost - option
+
+---------------------pgadmin dump restore-------------------------------------------------
+1:  createuser v_user
+2:  createdb -T template0 restored_database
+3: psql restored_database < /home/crewlogix/vgps_dump.bak
+
+----------------------------------------------------------------------------
+
+
+
